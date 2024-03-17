@@ -4,6 +4,7 @@ from django.db import models
 class User(models.Model):
     name = models.CharField(max_length=255, null=False)
     email = models.EmailField(max_length=255, null=False, unique=True)
+    password = models.CharField(max_length=50, null=False)
     phone_number = models.CharField(max_length=10, unique=True)
     is_active = models.BooleanField(default=False)
 
@@ -19,7 +20,7 @@ class UserProfile(models.Model):
 
     profile_pic_url = models.URLField(default=DEFAULT_PROFILE_PIC_URL)
     bio = models.TextField(max_length=255, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, related_name="profile")
 
     def __str__(self):
         return self.user.name

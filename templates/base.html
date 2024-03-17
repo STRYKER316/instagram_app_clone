@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}
+                Instagram
+            {% endblock %}
+        </title>
+        <link rel="shortcut icon" type="image/png" href="https://www.instagram.com/static/images/ico/favicon-192.png">
+        <script src="https://kit.fontawesome.com/fb8f1c0305.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div style="height: 40px; background-color: lightblue; text-align: center;">
+            This is the header
+        </div>
+
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <div style="height: 40px; position: absolute; bottom: 0; width: 100%; background-color: lightyellow; text-align: center;">
+            This is the footer
+        </div>
+
+    </body>
+</html>
