@@ -6,4 +6,6 @@ from users import views
 urlpatterns = [
     path('index/', views.index, name='user_index'),
     path('signup/', views.signup, name='user_signup'),
+
+    path('add/', views.create_user, name='create_user_api'),
 ]

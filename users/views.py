@@ -1,5 +1,11 @@
 from django.shortcuts import redirect, render
 
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from users.serializers import UserCreateSerializer
+
 from .models import User
 from .form import UserSignUpForm
 
@@ -38,3 +44,31 @@ def signup(request):
 
     # GET request by default
     return render(request, 'users/signup.html', context)
+
+
+# ----------------- DRF API Views -----------------
+
+@api_view(['POST'])
+def create_user(request):
+    # print("Data ->", request.data)
+
+    userSerializer = UserCreateSerializer(data=request.data)
+
+    response_data = {
+        "errors": None,
+        "data": None
+    }
+
+    if userSerializer.is_valid():
+        user = userSerializer.save()
+
+        response_data["data"] = {
+            "id": user.id
+        }
+        response_status = status.HTTP_201_CREATED
+
+    else:
+        response_data["errors"] = userSerializer.errors
+        response_status = status.HTTP_400_BAD_REQUEST
+
+    return Response(response_data, status=response_status)
