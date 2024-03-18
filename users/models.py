@@ -17,7 +17,12 @@ class UserProfile(TimeStamp):
     profile_pic_url = models.URLField(default=DEFAULT_PROFILE_PIC_URL)
 
     bio = models.TextField(max_length=255, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, related_name="profile")
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=False,
+        related_name="profile"
+    )
 
     is_verified = models.BooleanField(default=False)
 
