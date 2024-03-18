@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'app_main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'instagram_db',
+        'USER': 'instagram_user',
+        'PASSWORD': 'instagram_pass',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

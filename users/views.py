@@ -30,12 +30,10 @@ def signup(request):
             user = context['form'].save(commit=False)
             user.save()
             context['message'] = "User created successfully"
-
             return redirect('user_signup')
 
         # invalid form
         context['errors'] = context['form'].errors
-
         return render(request, 'users/signup.html', context)
 
     # GET request by default
