@@ -143,6 +143,9 @@ venv.bak/
 # Virtual Enviornment
 insta_app_env/
 
+# Production Static assest
+production_static_assets/
+
 # Spyder project settings
 .spyderproject
 .spyproject

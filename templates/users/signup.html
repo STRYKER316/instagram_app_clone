@@ -1,5 +1,7 @@
 {% extends "../base.html" %}
 
+{% load static %}
+
 {% block title %}
     Sign Up
 {% endblock %}
@@ -7,14 +9,29 @@
 {% block content %}
 
     <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Overpass+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'signup.css' %}">
 
     <div id="wrapper">
-        <div class="main-control">
-            <div>
+        <div class="main-content">
+            <div class="header">
                 <img src="https://i.imgur.com/zqpwkLQ.png" alt="Not Found">
             </div>
             <div class="l-part">
-                This is my content
+                {% if message %}
+                    {{ message }}
+                {% endif %}
+
+                <form action="/users/signup/" method="post">
+                    {% csrf_token %}
+
+                    {% for field in form.visible_fields %}
+                        <div class="label"> {{ field.label }} </div>
+                        {{ field.errors }}
+                        {{ field }}
+                    {% endfor %}
+
+                    <input type="submit" value="Submit" class="btn" />
+                </form>
             </div>
         </div>
     </div>
