@@ -1,26 +1,25 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
-class User(models.Model):
-    name = models.CharField(max_length=255, null=False)
-    email = models.EmailField(max_length=255, null=False, unique=True)
-    password = models.CharField(max_length=50, null=False)
-    phone_number = models.CharField(max_length=10, blank=True)
-    is_active = models.BooleanField(default=False)
+class TimeStamp(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name
+    class Meta:
+        abstract = True
 
 
-class UserProfile(models.Model):
+class UserProfile(TimeStamp):
+
     DEFAULT_PROFILE_PIC_URL = "https://mywebsite.com/placeholder.png"
-
     profile_pic_url = models.URLField(default=DEFAULT_PROFILE_PIC_URL)
+
     bio = models.TextField(max_length=255, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, related_name="profile")
+
+    is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.name
