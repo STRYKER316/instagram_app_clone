@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,3 +130,10 @@ STATIC_ROOT = BASE_DIR/'production_static_assets'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# JWT settings
+if DEBUG:
+    SIMPLE_JWT = {
+        'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+        'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    }

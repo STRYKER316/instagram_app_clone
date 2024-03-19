@@ -9,7 +9,6 @@ class UserCreateSerializer(ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        # fields
         fields = ('username', 'email', 'password', )
 
     def create(self, validated_data):
@@ -20,3 +19,20 @@ class UserCreateSerializer(ModelSerializer):
         UserProfile.objects.create(user=user)
 
         return user
+
+
+class UserViewSerializer(ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'first_name', 'last_name')
+
+
+class UserProfileViewSerializer(ModelSerializer):
+
+    user = UserViewSerializer()
+
+    class Meta:
+        model = UserProfile
+        # fields = ('bio', 'profile_pic_url', 'user', 'created_on', 'updated_on')
+        exclude = ('id', 'is_verified')

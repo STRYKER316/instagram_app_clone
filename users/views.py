@@ -1,12 +1,23 @@
 from django.shortcuts import redirect, render
 
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes,
+)
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.serializers import UserCreateSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from rest_framework.permissions import IsAuthenticated
+
+from users.serializers import (
+    UserCreateSerializer,
+    UserProfileViewSerializer,
+)
 
 from .models import User, UserProfile
 from .form import UserSignUpForm
@@ -75,3 +86,17 @@ def create_user(request):
         response_status = status.HTTP_400_BAD_REQUEST
 
     return Response(response_data, status=response_status)
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def user_list(request):
+
+    print("request user object -> ", request.user)
+
+    user_profiles = UserProfile.objects.all()
+
+    seriliazed_user_profiles = UserProfileViewSerializer(instance=user_profiles, many=True)
+
+    return Response(seriliazed_user_profiles.data, status=status.HTTP_200_OK)
