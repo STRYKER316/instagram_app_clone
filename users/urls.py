@@ -25,4 +25,6 @@ urlpatterns = [
 
     path('<int:pk>/', views.UserprofileDetail.as_view(), name='user_detail_api'),
 
+    path('edge/', views.UserNetworkEdgeView.as_view(), name='network_edge'),
+
 ]

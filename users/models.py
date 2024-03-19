@@ -32,3 +32,10 @@ class UserProfile(TimeStamp):
 
     def __str__(self):
         return self.user.name
+
+
+class NetworkEdge(TimeStamp):
+
+    from_user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="following")
+
+    to_user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="followers")

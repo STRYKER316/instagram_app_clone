@@ -165,3 +165,15 @@ class UserprofileDetail(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+
+
+class UserNetworkEdgeView(APIView):
+
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass
+
+    def delete(self, rerquest):
+        pass
