@@ -7,9 +7,10 @@ from rest_framework.decorators import (
     authentication_classes,
 )
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from users.serializers import (
     UserCreateSerializer,
@@ -86,6 +87,8 @@ def create_user(request):
     return Response(response_data, status=response_status)
 
 
+# ToDo: Move User List API to a class based view --> /users/list/
+
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
@@ -100,58 +103,65 @@ def user_list(request):
     return Response(seriliazed_user_profiles.data, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def get_user(request, pk):
+# ----------------- Class Based Views -----------------
 
-    print(request.data)
+class UserprofileDetail(APIView):
+    permission_classes = [IsAuthenticated, ]
+    authentication_classes = [JWTAuthentication, ]
 
-    user = UserProfile.objects.filter(id=pk).first()
+    def get(self, request, pk):
+        user = UserProfile.objects.filter(id=pk).first()
 
-    if user:
-        seriliazed_user = UserProfileViewSerializer(instance=user)
+        if user:
+            seriliazed_user = UserProfileViewSerializer(instance=user)
 
-        response_data = {
-            'data': seriliazed_user.data,
-            'errors': None
-        }
-        response_status = status.HTTP_200_OK
-    else:
+            response_data = {
+                'data': seriliazed_user.data,
+                'errors': None
+            }
+            response_status = status.HTTP_200_OK
+        else:
+            response_data = {
+                'data': None,
+                'errors': "User not found"
+            }
+            response_status = status.HTTP_404_NOT_FOUND
+
+        return Response(response_data, response_status)
+
+
+    def post(self, request, pk):
+        user_profile_serializer = UserProfileUpdateSerializer(
+            instance=request.user.profile,
+            data=request.data
+        )
+
         response_data = {
             'data': None,
-            'errors': "User not found"
+            'errors': None
         }
-        response_status = status.HTTP_404_NOT_FOUND
 
-    return Response(response_data, response_status)
+        if user_profile_serializer.is_valid():
+            user_profile = user_profile_serializer.save()
+            response_data['data'] = UserProfileViewSerializer(instance=user_profile).data
+            response_status = status.HTTP_200_OK
+
+        else:
+            response_data['errors'] = user_profile_serializer.errors
+            response_status = status.HTTP_400_BAD_REQUEST
+
+        return Response(response_data, response_status)
 
 
-@api_view(['POST'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def update_user_profile(request):
+    def delete(self, request, pk):
+        user = User.objects.filter(id=pk).first()
 
-    print(request.data)
-    print(request.user)
+        if user:
+            user.delete()
 
-    user_profile_serializer = UserProfileUpdateSerializer(
-        instance=request.user.profile,
-        data=request.data
-    )
+        response_data = {
+            'data': None,
+            'message': "User deleted successfully"
+        }
 
-    response_data = {
-        'data': None,
-        'errors': None
-    }
-
-    if user_profile_serializer.is_valid():
-        user_profile = user_profile_serializer.save()
-        response_data['data'] = UserProfileViewSerializer(instance=user_profile).data
-        response_status = status.HTTP_200_OK
-
-    else:
-        response_data['errors'] = user_profile_serializer.errors
-        response_status = status.HTTP_400_BAD_REQUEST
-
-    return Response(response_data, response_status)
+        return Response(response_data, status=status.HTTP_200_OK)

@@ -16,6 +16,10 @@ class UserProfile(TimeStamp):
     DEFAULT_PROFILE_PIC_URL = "https://mywebsite.com/placeholder.png"
     profile_pic_url = models.ImageField(upload_to='profile_pictures/', blank=True)
 
+    # ToDo: Add verification for size and type of profile pic being uploaded
+
+    # ToDo: Modify the naming of the file being saved so that the update view becomes Idempotent or Compliant with PUT request
+
     bio = models.TextField(max_length=255, blank=True)
     user = models.OneToOneField(
         User,
