@@ -127,7 +127,7 @@ def get_user(request, pk):
     return Response(response_data, response_status)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def update_user_profile(request):

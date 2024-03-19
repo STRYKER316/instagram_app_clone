@@ -14,7 +14,7 @@ class TimeStamp(models.Model):
 class UserProfile(TimeStamp):
 
     DEFAULT_PROFILE_PIC_URL = "https://mywebsite.com/placeholder.png"
-    profile_pic_url = models.URLField(default=DEFAULT_PROFILE_PIC_URL)
+    profile_pic_url = models.ImageField(upload_to='profile_pictures/', blank=True)
 
     bio = models.TextField(max_length=255, blank=True)
     user = models.OneToOneField(
