@@ -23,4 +23,8 @@ urlpatterns = [
 
     path('list/', views.user_list, name='user_list_api'),
 
+    path('<int:pk>/', views.get_user, name='get_single_user'),
+
+    path('update/', views.update_user_profile, name='update_user_profile'),
+
 ]

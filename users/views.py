@@ -7,15 +7,13 @@ from rest_framework.decorators import (
     authentication_classes,
 )
 from rest_framework.response import Response
-
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
 from rest_framework.permissions import IsAuthenticated
 
 from users.serializers import (
     UserCreateSerializer,
+    UserProfileUpdateSerializer,
     UserProfileViewSerializer,
 )
 
@@ -100,3 +98,60 @@ def user_list(request):
     seriliazed_user_profiles = UserProfileViewSerializer(instance=user_profiles, many=True)
 
     return Response(seriliazed_user_profiles.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user(request, pk):
+
+    print(request.data)
+
+    user = UserProfile.objects.filter(id=pk).first()
+
+    if user:
+        seriliazed_user = UserProfileViewSerializer(instance=user)
+
+        response_data = {
+            'data': seriliazed_user.data,
+            'errors': None
+        }
+        response_status = status.HTTP_200_OK
+    else:
+        response_data = {
+            'data': None,
+            'errors': "User not found"
+        }
+        response_status = status.HTTP_404_NOT_FOUND
+
+    return Response(response_data, response_status)
+
+
+@api_view(['PUT'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def update_user_profile(request):
+
+    print(request.data)
+    print(request.user)
+
+    user_profile_serializer = UserProfileUpdateSerializer(
+        instance=request.user.profile,
+        data=request.data
+    )
+
+    response_data = {
+        'data': None,
+        'errors': None
+    }
+
+    if user_profile_serializer.is_valid():
+        user_profile = user_profile_serializer.save()
+        response_data['data'] = UserProfileViewSerializer(instance=user_profile).data
+        response_status = status.HTTP_200_OK
+
+    else:
+        response_data['errors'] = user_profile_serializer.errors
+        response_status = status.HTTP_400_BAD_REQUEST
+
+    return Response(response_data, response_status)
