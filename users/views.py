@@ -4,9 +4,11 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from users.serializers import UserCreateSerializer
 
-from .models import User
+from .models import User, UserProfile
 from .form import UserSignUpForm
 
 
@@ -50,8 +52,6 @@ def signup(request):
 
 @api_view(['POST'])
 def create_user(request):
-    # print("Data ->", request.data)
-
     userSerializer = UserCreateSerializer(data=request.data)
 
     response_data = {
@@ -62,8 +62,11 @@ def create_user(request):
     if userSerializer.is_valid():
         user = userSerializer.save()
 
+        refresh = RefreshToken.for_user(user)
+
         response_data["data"] = {
-            "id": user.id
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
         }
         response_status = status.HTTP_201_CREATED
 
